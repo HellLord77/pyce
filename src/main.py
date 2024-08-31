@@ -17,6 +17,8 @@ from requests import Response
 from requests import Session
 from requests import exceptions
 
+import init
+
 T = typing.TypeVar("T")
 
 
@@ -86,7 +88,7 @@ def _update_cookies_input(url: str, session: Session):
 
 
 def _update_cookies_playwright(url: str, session: Session):
-    # noinspection PyUnresolvedReferences
+    # noinspection PyUnresolvedReferences,PyPackageRequirements
     from playwright.sync_api import sync_playwright
 
     print(f"[#] Solve reCAPTCHA<{url}>")
@@ -150,14 +152,14 @@ class IceReport:
         report_id: int,
         market_filter: str,
         time_period_filter: str,
-        row_filter: str,
+        column_filter: str,
         base_dir: str,
         base_url: str = BASE_URL,
     ):
         self.report_id = report_id
         self.market_filter = IndexFilter(market_filter)
         self.time_period_filter = IndexFilter(time_period_filter)
-        self.row_filter = IndexFilter(row_filter)
+        self.column_filter = IndexFilter(column_filter)
         self.base_dir = base_dir
 
         self._cookie_url = join_url(base_url, "report", str(report_id))
@@ -231,7 +233,7 @@ class IceReport:
                         try:
                             with open(path, "w", newline="") as file:
                                 writer = csv.writer(file)
-                                writer.writerows(map(self.row_filter.filter, rows))
+                                writer.writerows(map(self.column_filter.filter, rows))
                         except Exception as exception:
                             print(f"[!] {exception}")
                             os.remove(path)
@@ -259,15 +261,20 @@ class IceReport:
 
 def main():
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        "pyce", formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "-v", "--version", action="version", version=f"%(prog)s {init.__version__}"
     )
     parser.add_argument("report_id", type=int, help="Report ID")
     parser.add_argument("-m", "--market-filter", default="-", help="Market filter")
     parser.add_argument(
         "-t", "--time-period-filter", default="0", help="Time period filter"
     )
-    parser.add_argument("-r", "--row-filter", default="-4,8-", help="Row filter")
-    parser.add_argument("-d", "--base-dir", default="ice", help="Base output directory")
+    parser.add_argument("-c", "--column-filter", default="-", help="Column filter")
+    parser.add_argument(
+        "-d", "--base-dir", default="pyce", help="Base output directory"
+    )
 
     report = IceReport(**vars(parser.parse_args()))
     report.dump()

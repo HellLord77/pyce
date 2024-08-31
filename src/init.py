@@ -1,4 +1,12 @@
-__version__ = "0.0.2"
+__author__ = "HellLord"
+__copyright__ = ""
+__credits__ = ["HellLord"]
+
+__license__ = ""
+__version__ = "0.0.3"
+__maintainer__ = "HellLord"
+__email__ = "ratul.debnath.year@gmail.com"
+__status__ = "Development"
 
 import sys
 
