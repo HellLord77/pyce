@@ -266,12 +266,21 @@ def main():
     parser.add_argument(
         "-v", "--version", action="version", version=f"%(prog)s {init.__version__}"
     )
-    parser.add_argument("report_id", type=int, help="Report ID")
-    parser.add_argument("-m", "--market-filter", default="-", help="Market filter")
     parser.add_argument(
-        "-t", "--time-period-filter", default="0", help="Time period filter"
+        "report_id", type=int, help=join_url(BASE_URL, "report", "<report_id>")
     )
-    parser.add_argument("-c", "--column-filter", default="-", help="Column filter")
+    parser.add_argument(
+        "-m", "--market-filter", default="-", help="comma separated market filter"
+    )
+    parser.add_argument(
+        "-t",
+        "--time-period-filter",
+        default="0",
+        help="comma separated time period filter",
+    )
+    parser.add_argument(
+        "-c", "--column-filter", default="-", help="comma separated column filter"
+    )
     parser.add_argument(
         "-d", "--base-dir", default="pyce", help="Base output directory"
     )
